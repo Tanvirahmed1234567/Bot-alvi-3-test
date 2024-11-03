@@ -1,13 +1,13 @@
 module.exports.config = {
-  name: "hug",
-  version: "3.1.1",
+  name: "crush",
+  version: "2.0.0",
   permssion: 0,
   premium: false,
   prefix: true,
   credits: "ALVI",
-  description: "Hug 🥰",
-  category: "img",
-  usages: "[@mention]",
+  description: "mention partner",
+  category: "Love",
+  usages: `Please tag 1 person\n\nHow to use?\n${global.config.PREFIX}crush <@tag>\n\nExample:\n${global.config.PREFIX}crush @name\n`,
   cooldowns: 5,
   dependencies: {
       "axios": "",
@@ -18,13 +18,14 @@ module.exports.config = {
 };
 
 module.exports.onLoad = async() => {
+
   const { resolve } = global.nodemodule["path"];
   const { existsSync, mkdirSync } = global.nodemodule["fs-extra"];
   const { downloadFile } = global.utils;
   const dirMaterial = __dirname + `/cache/canvas/`;
-  const path = resolve(__dirname, 'cache/canvas', 'hugv2.png');
+  const path = resolve(__dirname, 'cache/canvas', 'joshua.png');
   if (!existsSync(dirMaterial + "canvas")) mkdirSync(dirMaterial, { recursive: true });
-  if (!existsSync(path)) await downloadFile("https://i.ibb.co/zRdZJzG/1626342271-28-kartinkin-com-p-anime-obnimashki-v-posteli-anime-krasivo-30.jpg", path);
+  if (!existsSync(path)) await downloadFile("https://i.imgur.com/ha8gxu5.jpg", path);
 }
 
 async function makeImage({ one, two }) {
@@ -34,7 +35,7 @@ async function makeImage({ one, two }) {
   const jimp = global.nodemodule["jimp"];
   const __root = path.resolve(__dirname, "cache", "canvas");
 
-  let batgiam_img = await jimp.read(__root + "/hugv2.png");
+  let batgiam_img = await jimp.read(__root + "/joshua.png");
   let pathImg = __root + `/batman${one}_${two}.png`;
   let avatarOne = __root + `/avt_${one}.png`;
   let avatarTwo = __root + `/avt_${two}.png`;
@@ -47,7 +48,7 @@ async function makeImage({ one, two }) {
 
   let circleOne = await jimp.read(await circle(avatarOne));
   let circleTwo = await jimp.read(await circle(avatarTwo));
-  batgiam_img.composite(circleOne.resize(100, 100), 370, 40).composite(circleTwo.resize(100, 100), 330, 150);
+  batgiam_img.composite(circleOne.resize(110, 110), 150, 76).composite(circleTwo.resize(100, 100), 238, 305);
 
   let raw = await batgiam_img.getBufferAsync("image/png");
 
@@ -64,13 +65,19 @@ async function circle(image) {
   return await image.getBufferAsync("image/png");
 }
 
-module.exports.run = async function ({ event, api, args }) {    
+module.exports.run = async function ({ event, api, args }) {
   const fs = global.nodemodule["fs-extra"];
   const { threadID, messageID, senderID } = event;
-  const mention = Object.keys(event.mentions);
-  if (!mention[0]) return api.sendMessage("Please mention 1 person.", threadID, messageID);
+  var mention = Object.keys(event.mentions);
+  if (!mention[0]) return api.sendMessage(`Please tag 1 person\n\nHow to use?\n${global.config.PREFIX}crush <@tag>\n\nExample:\n${global.config.PREFIX}crush @name\n\n`, threadID, messageID);
   else {
-      const one = senderID, two = mention[0];
-      return makeImage({ one, two }).then(path => api.sendMessage({ body: "╭──────•◈•──────╮\n         -♦𝗕Ø𝗦𝗦 𝗧𝗔𝗡𝗩𝗜𝗥♦-        \n __۵ღ🪶🩷অনেক༎ইচ্ছে༎করে তোমাকে খুব শক্ত༎করে জড়িয়ে ধরে বলি༎ভালোবাসি😽🌼🌻\n╰──────•◈•──────╯", attachment: fs.createReadStream(path) }, threadID, () => fs.unlinkSync(path), messageID));
+    let tag = event.mentions[mention].replace("@", "");
+      var one = senderID, two = mention;
+      return makeImage({ one, two }).then(path => api.sendMessage({ body: "╭──────•◈•───────╮\n         😍-𝗕Ø𝗦𝗦 𝗧𝗔𝗡𝗩𝗜𝗥-🫦       \n _যে ফুলের স্পর্শে ক্ষত মুছে যায় সেই ফুল তুমি..!🌻🦋\n╰──────•◈•───────╯",
+          mentions: [{
+        tag: tag,
+        id: mention
+      }],
+   attachment: fs.createReadStream(path) }, threadID, () => fs.unlinkSync(path), messageID));
   }
-    }
+}
